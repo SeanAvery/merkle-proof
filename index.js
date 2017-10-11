@@ -8,12 +8,16 @@ export class MerkleProof {
 
   async getTransactionProof(txHash) {
     try {
-      console.log('txHash', txHash)
       const tx = await this.eth.sendAsync({
         method: 'eth_getTransactionByHash',
         params: [txHash]
       })
-      console.log('tx', tx)
+      console.log('tx', tx.blockHash)
+      const block = await this.eth.sendAsync({
+        method: 'eth_getBlockByHash',
+        params: [tx.blockHash, true]
+      })
+      console.log('block', block)
     } catch (err) {
       Error('### error in getTransactionProof', err)
     }
