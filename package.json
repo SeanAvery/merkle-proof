@@ -1,0 +1,28 @@
+{
+  "name": "merkle-proof",
+  "version": "0.0.1",
+  "description": "patricia tree merkle proofs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeanAvery/merkle-proof.git"
+  },
+  "keywords": [
+    "merkle",
+    "tree",
+    "proofs",
+    "ethereum"
+  ],
+  "author": "Sean Pollock",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SeanAvery/merkle-proof/issues"
+  },
+  "homepage": "https://github.com/SeanAvery/merkle-proof#readme",
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0"
+  }
+}
