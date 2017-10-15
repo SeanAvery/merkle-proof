@@ -30,8 +30,9 @@ export class MerkleProof {
       txTrie.findPath(rlp.encode(tx.transactionIndex), (err, node, keys, stack) => {
         console.log('node', node)
         console.log('keys', keys)
-        console.log('stack', stack)
-        console.log('block', new Block(block))
+        console.log('stack', stack.map(node => node.raw))
+        console.log('block', new Block(block).raw)
+        console.log('path', tx.transactionIndex)
         // const prf = {
         //   blockHash: Buffer.from(tx.blockHash.substring(2), 'hex')
         //   header: new Block(block)
@@ -42,6 +43,10 @@ export class MerkleProof {
     } catch (err) {
       Error('### error in getTransactionProof', err)
     }
+  }
+
+  rawStack(stack) {
+    stack.map(node => node.raw)
   }
 }
 
