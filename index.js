@@ -1,5 +1,7 @@
 import Provider from 'ethjs-provider-http'
 import RPC from 'ethjs-rpc'
+import Trie from 'merkle-patricia-tree'
+import rlp from 'rlp'
 
 export class MerkleProof {
   constructor(params) {
@@ -12,14 +14,26 @@ export class MerkleProof {
         method: 'eth_getTransactionByHash',
         params: [txHash]
       })
-      console.log('tx', tx.blockHash)
+      if (!tx) Error('###', txHash, 'is not a valid tx')
       const block = await this.eth.sendAsync({
         method: 'eth_getBlockByHash',
         params: [tx.blockHash, true]
       })
-      console.log('block', block)
+      const txTrie = new Trie()
+      block.transactions.map(sibling => {
+        const index = rlp.encode(sibling.transactionIndex)
+
+      })
     } catch (err) {
       Error('### error in getTransactionProof', err)
+    }
+  }
+
+  formatTx(txObj) {
+    return {
+      nonce: txObj.nonce,
+      gasPrice: txObj.gasPrice,
+      value: txObj.value
     }
   }
 }
