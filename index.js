@@ -2,6 +2,7 @@ import Provider from 'ethjs-provider-http'
 import RPC from 'ethjs-rpc'
 import Trie from 'merkle-patricia-tree'
 import rlp from 'rlp'
+import TX from 'ethereumjs-tx'
 
 export class MerkleProof {
   constructor(params) {
@@ -22,7 +23,7 @@ export class MerkleProof {
       const txTrie = new Trie()
       block.transactions.map(leaf => {
         const index = rlp.encode(leaf.transactionIndex)
-        console.log('index', index)
+        console.log('formatted tx', new TX(leaf))
         // const index = rlp.encode(siblig.transactionIndex)
       })
     } catch (err) {
