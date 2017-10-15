@@ -23,9 +23,10 @@ export class MerkleProof {
       const txTrie = new Trie()
       block.transactions.map(leaf => {
         const index = rlp.encode(leaf.transactionIndex)
-        console.log('formatted tx', new TX(leaf))
-        // const index = rlp.encode(siblig.transactionIndex)
+        const tx = new TX(leaf).serialize()
+        txTrie.put(index, tx)
       })
+      console.log('txTrie', txTrie)
     } catch (err) {
       Error('### error in getTransactionProof', err)
     }
