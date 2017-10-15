@@ -3,6 +3,7 @@ import RPC from 'ethjs-rpc'
 import Trie from 'merkle-patricia-tree'
 import rlp from 'rlp'
 import TX from 'ethereumjs-tx'
+import Block from 'ethereumjs-block'
 
 export class MerkleProof {
   constructor(params) {
@@ -30,6 +31,13 @@ export class MerkleProof {
         console.log('node', node)
         console.log('keys', keys)
         console.log('stack', stack)
+        console.log('block', new Block(block))
+        // const prf = {
+        //   blockHash: Buffer.from(tx.blockHash.substring(2), 'hex')
+        //   header: new Block(block)
+        //   path:
+        //   value:
+        // }
       })
     } catch (err) {
       Error('### error in getTransactionProof', err)
