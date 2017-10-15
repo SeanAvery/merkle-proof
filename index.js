@@ -23,20 +23,16 @@ export class MerkleProof {
       const txTrie = new Trie()
       block.transactions.map(leaf => {
         const index = rlp.encode(leaf.transactionIndex)
-        const tx = new TX(leaf).serialize()
-        txTrie.put(index, tx)
+        const input = new TX(leaf).serialize()
+        txTrie.put(index, input)
       })
-      console.log('txTrie', txTrie)
+      txTrie.findPath(rlp.encode(tx.transactionIndex), (err, node, keys, stack) => {
+        console.log('node', node)
+        console.log('keys', keys)
+        console.log('stack', stack)
+      })
     } catch (err) {
       Error('### error in getTransactionProof', err)
-    }
-  }
-
-  formatTx(txObj) {
-    return {
-      nonce: txObj.nonce,
-      gasPrice: txObj.gasPrice,
-      value: txObj.value
     }
   }
 }
