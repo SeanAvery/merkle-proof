@@ -22,27 +22,41 @@ export class MerkleProof {
         params: [tx.blockHash, true]
       })
       const txTrie = new Trie()
-      block.transactions.map(leaf => {
-        const index = rlp.encode(leaf.transactionIndex)
-        const input = new TX(leaf).serialize()
+      block.transactions.map(tx => this.formatTX(tx))
+      .map(sibling => {
+        console.log('sibling', sibling)
+        // const index = rlp.encode(parseInt(sibling.transactionIndex))
+        // const input = new TX(sibling).serialize()
         txTrie.put(index, input)
       })
+      let prf
       txTrie.findPath(rlp.encode(tx.transactionIndex), (err, node, keys, stack) => {
-        console.log('node', node)
-        console.log('keys', keys)
-        console.log('stack', stack.map(node => node.raw))
-        console.log('block', new Block(block).raw)
-        console.log('path', tx.transactionIndex)
-        // const prf = {
+        if (err) console.log('### error in findPath', err)
+        // stack.map((node, i) => node.raw.map(comp => console.log('comp', comp)))
+        // console.log('block', new Block(block).raw)
+        // console.log('path', rlp.encode(tx.transactionIndex))
+        // console.log('value', nodes.value)
+        // prf = {
         //   blockHash: Buffer.from(tx.blockHash.substring(2), 'hex')
         //   header: new Block(block)
         //   path:
         //   value:
         // }
       })
+      return prf
     } catch (err) {
       Error('### error in getTransactionProof', err)
     }
+  }
+
+  formatTX(tx) {
+    tx.blockNumber = parseInt(tx.blockNumber)
+    tx.gas = parseInt(tx.gas)
+    tx.gasPrice = parseInt(tx.gasPrice)
+    tx.nonce = parseInt(tx.nonce)
+    tx.value = parseInt(tx.value)
+    tx.transactionIndex = parseInt(tx.transactionIndex)
+    return tx
   }
 
   rawStack(stack) {
@@ -57,4 +71,7 @@ const params = {
 
 const MP = new MerkleProof(params)
 
-MP.getTransactionProof(txHash).then(prf => console.log('proof', prf))
+MP.getTransactionProof(txHash)
+// .then(prf => return MP.verifyTransaction(prf))
+// .then(res =>> console.log('res', res))
+.catch(err => Error('### error in test', err))
