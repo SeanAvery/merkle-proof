@@ -4,6 +4,7 @@ import Trie from 'merkle-patricia-tree'
 import rlp from 'rlp'
 import TX from 'ethereumjs-tx'
 import Block from 'ethereumjs-block'
+import delay from 'await-delay'
 
 export class MerkleProof {
   constructor(params) {
@@ -21,17 +22,12 @@ export class MerkleProof {
         method: 'eth_getBlockByHash',
         params: [tx.blockHash, true]
       })
-      const txTrie = new Trie()
-      block.transactions.map(tx => this.formatTX(tx))
-      .map(sibling => {
-        console.log('sibling', sibling)
-        // const index = rlp.encode(parseInt(sibling.transactionIndex))
-        // const input = new TX(sibling).serialize()
-        txTrie.put(index, input)
-      })
+      if (!block) Error('###', tx, 'does not exist in a block' )
+      const txTrie = await this.pushTransactions(block.transactions)
       let prf
       txTrie.findPath(rlp.encode(tx.transactionIndex), (err, node, keys, stack) => {
         if (err) console.log('### error in findPath', err)
+        console.log('############### node', node)
         // stack.map((node, i) => node.raw.map(comp => console.log('comp', comp)))
         // console.log('block', new Block(block).raw)
         // console.log('path', rlp.encode(tx.transactionIndex))
@@ -57,6 +53,23 @@ export class MerkleProof {
     tx.value = parseInt(tx.value)
     tx.transactionIndex = parseInt(tx.transactionIndex)
     return tx
+  }
+
+  async pushTransactions(transactions, trie) {
+    try {
+      const txTrie = new Trie()
+      transactions.map(tx => this.formatTX(tx))
+      .map(async sibling => {
+        const index = rlp.encode(sibling.transactionIndex)
+        const input = new TX(sibling).serialize()
+        await txTrie.put(index, input)
+      })
+
+      await delay(1000)
+      return txTrie
+    } catch (err) {
+      console.log('### eror in pushTransactions', err)
+    }
   }
 
   rawStack(stack) {
