@@ -25,9 +25,12 @@ export class MerkleProof {
       if (!block) Error('###', tx, 'does not exist in a block' )
       const txTrie = await this.pushTransactions(block.transactions)
       let prf
+      console.log('txTrie', txTrie)
       txTrie.findPath(rlp.encode(tx.transactionIndex), (err, node, keys, stack) => {
         if (err) console.log('### error in findPath', err)
         console.log('############### node', node)
+        console.log('keys', keys)
+        console.log('stack', stack)
         // stack.map((node, i) => node.raw.map(comp => console.log('comp', comp)))
         // console.log('block', new Block(block).raw)
         // console.log('path', rlp.encode(tx.transactionIndex))
@@ -64,16 +67,11 @@ export class MerkleProof {
         const input = new TX(sibling).serialize()
         await txTrie.put(index, input)
       })
-
       await delay(1000)
       return txTrie
     } catch (err) {
       console.log('### eror in pushTransactions', err)
     }
-  }
-
-  rawStack(stack) {
-    stack.map(node => node.raw)
   }
 }
 
